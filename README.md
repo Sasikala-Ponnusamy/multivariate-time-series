@@ -183,6 +183,11 @@ This project demonstrates that incorporating a **custom self-attention mechanism
 * Evaluation on real-world datasets
 
 ---
+## Results
+- MAE, RMSE, MAPE reported in `results/metrics.csv`
+- Attention heatmap shows higher focus during regime shifts
+- Attention-LSTM outperforms baseline LSTM
+
 
 ## 🧾 Author
 
