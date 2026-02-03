@@ -1,0 +1,22 @@
+Advanced-Time-Series-Forecasting-Attention-LSTM/
+│
+├── data_generation.py
+├── preprocessing.py
+├── train.py
+├── evaluation.py
+├── attention_analysis.py
+│
+├── models/
+│   ├── lstm_baseline.py
+│   ├── attention.py
+│   └── attention_lstm.py
+│
+├── results/
+│   ├── metrics.csv
+│   └── plots/
+│
+├── report/
+│   └── analysis_report.md
+│
+└── README.md
+
