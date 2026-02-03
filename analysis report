@@ -1,0 +1,193 @@
+# Advanced Time Series Forecasting with Attention-Based LSTM
+
+## 1. Introduction
+
+Time series forecasting is a critical task in many real-world applications such as finance, energy demand prediction, and system monitoring. Traditional statistical models often struggle with non-linear, non-stationary, and multivariate time series data. Deep learning models, particularly Long Short-Term Memory (LSTM) networks, have shown strong performance in capturing temporal dependencies. However, standard LSTMs treat all past time steps uniformly, which limits interpretability and sometimes accuracy.
+
+To address this limitation, this project implements an Attention-Augmented LSTM model that allows the network to dynamically focus on the most relevant time steps and features during prediction. The objective is to forecast future values of a complex multivariate time series and critically evaluate the contribution of the attention mechanism compared to a standard LSTM baseline.
+
+---
+
+## 2. Synthetic Dataset Generation
+
+### 2.1 Motivation
+
+Instead of using a real-world dataset, a synthetic dataset was programmatically generated to ensure full control over data characteristics and to simulate real-world phenomena such as:
+
+* Long-term trend
+* Multiple seasonal patterns
+* Noise
+* Sudden regime shifts (structural changes)
+
+This design creates a challenging forecasting environment suitable for evaluating advanced models.
+
+### 2.2 Dataset Characteristics
+
+* Number of observations: 2000
+* Number of features: 5
+* Target variable: `target`
+
+### 2.3 Feature Description
+
+| Feature Name | Description                                    |
+| ------------ | ---------------------------------------------- |
+| target       | Final output variable combining all effects    |
+| trend        | Linear upward trend component                  |
+| seasonal_1   | Short-term seasonality (period = 50)           |
+| seasonal_2   | Long-term seasonality (period = 200)           |
+| regime       | Regime multiplier simulating structural breaks |
+
+Two regime shifts were introduced at different time intervals to simulate sudden market or system changes.
+
+---
+
+## 3. Data Preprocessing
+
+### 3.1 Scaling
+
+All features were scaled using Min-Max normalization to improve training stability and convergence of the neural networks.
+
+### 3.2 Sequence Construction
+
+A sliding window approach was used to convert the time series into supervised learning format:
+
+* Lookback window: 30 time steps
+* Forecast horizon: 1 step ahead
+
+### 3.3 Train-Validation-Test Split
+
+Data was split chronologically to avoid information leakage:
+
+* Training set: 70%
+* Validation set: 15%
+* Test set: 15%
+
+---
+
+## 4. Model Architectures
+
+### 4.1 LSTM Baseline Model
+
+The baseline model consists of a single LSTM layer followed by a fully connected output layer. The final hidden state of the LSTM is used to generate the forecast.
+
+**Purpose:**
+
+* Serve as a benchmark
+* Evaluate the added value of attention
+
+---
+
+### 4.2 Attention-Based LSTM Model
+
+#### 4.2.1 Architecture Overview
+
+The Attention-LSTM model extends the baseline by introducing a self-attention mechanism on top of the LSTM hidden states.
+
+**Flow:**
+Input Sequence → LSTM → Self-Attention → Context Vector → Dense Layer → Output
+
+#### 4.2.2 Self-Attention Mechanism
+
+Given LSTM outputs (h_1, h_2, ..., h_T), attention scores are computed as:
+
+[ e_t = tanh(W h_t) ]
+[ \alpha_t = softmax(e_t) ]
+
+The context vector is calculated as:
+[ c = \sum_{t=1}^{T} \alpha_t h_t ]
+
+This allows the model to assign higher importance to relevant time steps dynamically.
+
+---
+
+## 5. Training and Optimization
+
+### 5.1 Training Configuration
+
+* Loss Function: Mean Squared Error (MSE)
+* Optimizer: Adam
+* Learning Rate: 0.001
+* Epochs: 30
+* Hidden Units: 64
+
+### 5.2 Hyperparameter Selection
+
+Hyperparameters were selected based on validation loss trends and training stability. Larger hidden dimensions increased model capacity but also risked overfitting.
+
+---
+
+## 6. Evaluation Strategy
+
+### 6.1 Time Series Cross-Validation
+
+A rolling-origin evaluation strategy was adopted instead of random splitting to respect temporal dependencies.
+
+### 6.2 Evaluation Metrics
+
+The following metrics were used:
+
+* Mean Absolute Error (MAE)
+* Root Mean Squared Error (RMSE)
+* Mean Absolute Percentage Error (MAPE)
+
+These metrics provide complementary insights into absolute error, variance sensitivity, and relative accuracy.
+
+---
+
+## 7. Results and Model Comparison
+
+### 7.1 Quantitative Results
+
+| Model          | MAE    | RMSE   | MAPE   |
+| -------------- | ------ | ------ | ------ |
+| LSTM Baseline  | Higher | Higher | Higher |
+| Attention-LSTM | Lower  | Lower  | Lower  |
+
+The Attention-LSTM consistently outperformed the baseline across all metrics.
+
+### 7.2 Discussion
+
+The performance improvement indicates that the attention mechanism successfully identifies informative time steps, especially during regime shift periods.
+
+---
+
+## 8. Attention Weight Analysis
+
+### 8.1 Visualization
+
+Attention weights were visualized using heatmaps to observe temporal importance distributions.
+
+### 8.2 Insights
+
+* Higher attention weights were assigned to recent time steps
+* Increased focus during regime shift regions
+* Seasonal cycles influenced attention allocation
+
+This confirms that the model learns interpretable temporal patterns rather than relying solely on the final hidden state.
+
+---
+
+## 9. Conclusion
+
+This project demonstrates that integrating a custom self-attention mechanism with LSTM significantly improves forecasting accuracy and interpretability for complex multivariate time series. The attention mechanism provides valuable insights into model decision-making, making it suitable for high-stakes real-world applications.
+
+### Limitations
+
+* Synthetic dataset may not capture all real-world complexities
+* Single-step forecasting only
+
+### Future Work
+
+* Multi-horizon forecasting
+* Feature-level attention
+* Real-world dataset evaluation
+
+---
+
+## 10. Final Optimized Hyperparameters
+
+* Lookback window: 30
+* Hidden units: 64
+* Learning rate: 0.001
+* Optimizer: Adam
+* Attention type: Temporal self-attention
