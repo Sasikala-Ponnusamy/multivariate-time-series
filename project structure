@@ -1,0 +1,18 @@
+Advanced-Time-Series-Attention-LSTM/
+│
+├── data/
+│   └── synthetic_time_series.csv
+│
+├── src/
+│   ├── data_generation.py
+│   ├── dataset.py
+│   ├── model.py
+│   ├── train.py
+│   ├── evaluate.py
+│
+├── results/
+│   ├── metrics.txt
+│   └── attention_weights.npy
+│
+├── requirements.txt
+└── README.md
